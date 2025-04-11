@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "4th Tab Eraser",
+  "version": "1.0.0",
+  "description": "タブとウィンドウの数を自動的に管理するChrome拡張機能",
+  "permissions": [
+    "tabs",
+    "windows",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+} 
