@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .setting-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    input[type="number"] {
+      width: 60px;
+      padding: 5px;
+    }
+    button {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>4th Tab Eraser</h2>
+    <div class="setting-group">
+      <label for="maxTabs">最大タブ数:</label>
+      <input type="number" id="maxTabs" min="1" max="100">
+    </div>
+    <div class="setting-group">
+      <label for="maxWindows">最大ウィンドウ数:</label>
+      <input type="number" id="maxWindows" min="1" max="100">
+    </div>
+    <button id="saveSettings">設定を保存</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 
