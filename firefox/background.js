@@ -42,8 +42,9 @@ async function manageTabs() {
   // 各ウィンドウのタブ数を確認
   for (const window of windows) {
     if (!window.tabs) {
-      return
+      continue;
     }
+
     // ピン留めされていないタブのみをフィルタリング
     const unpinnedTabs = window.tabs.filter(tab => !tab.pinned);
     
