@@ -41,15 +41,22 @@ async function manageTabs() {
   
   // 各ウィンドウのタブ数を確認
   for (const window of windows) {
-    if (window.tabs && window.tabs.length > settings.maxTabs) {
-      console.log('Window has too many tabs:', window.id, window.tabs.length);
-      // 最も古いタブを閉じる
-      const oldestTab = window.tabs.reduce((oldest, current) => {
+    if (!window.tabs) {
+      return
+    }
+    // ピン留めされていないタブのみをフィルタリング
+    const unpinnedTabs = window.tabs.filter(tab => !tab.pinned);
+    
+    if (unpinnedTabs.length > settings.maxTabs) {
+      console.log('Window has too many unpinned tabs:', window.id, unpinnedTabs.length);
+      
+      // 最も古いピン留めされていないタブを閉じる
+      const oldestTab = unpinnedTabs.reduce((oldest, current) => {
         return current.id < oldest.id ? current : oldest;
       });
       
       if (oldestTab) {
-        console.log('Closing oldest tab:', oldestTab.id);
+        console.log('Closing oldest unpinned tab:', oldestTab.id);
         await browser.tabs.remove(oldestTab.id);
       }
     }
@@ -61,13 +68,25 @@ async function manageWindows() {
   console.log('Managing windows...');
   const { settings } = await browser.storage.sync.get('settings');
   console.log('Current settings:', settings);
-  const windows = await browser.windows.getAll();
+  const windows = await browser.windows.getAll({ populate: true });
   console.log('Windows:', windows);
   
-  if (windows.length > settings.maxWindows) {
-    console.log('Too many windows:', windows.length);
+  // ピン留めされたタブを含まないウィンドウのみを対象にする
+  const closableWindows = [];
+  for (const window of windows) {
+    if (!window.tabs) {
+      continue;
+    }
+    const hasPinnedTab = window.tabs.some(tab => tab.pinned);
+    if (!hasPinnedTab) {
+      closableWindows.push(window);
+    }
+  }
+
+  if (closableWindows.length > settings.maxWindows) {
+    console.log('Too many windows without pinned tabs:', closableWindows.length);
     // 最も古いウィンドウを閉じる
-    const oldestWindow = windows.reduce((oldest, current) => {
+    const oldestWindow = closableWindows.reduce((oldest, current) => {
       return current.id < oldest.id ? current : oldest;
     });
     
